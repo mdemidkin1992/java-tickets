@@ -9,9 +9,6 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         List<Ticket> tickets = deserializeTickets("tickets.json");
-
-        for (Ticket t : tickets) System.out.println(t);
-
         FlightAnalyzer analyzer = new FlightAnalyzer(tickets);
 
         System.out.println("Минимальное время полета между городами Владивосток и Тель-Авив " +
@@ -22,7 +19,7 @@ public class Main {
             System.out.print(entry.getValue().toHoursPart() + " часов " + entry.getValue().toMinutesPart() + " минут\n");
         }
 
-        System.out.println("Разницу между средней ценой и медианой для " +
+        System.out.println("Разница между средней ценой и медианой для " +
                 "полета между городами Владивосток и Тель-Авив:");
         System.out.print(analyzer.getPriceDifference());
     }

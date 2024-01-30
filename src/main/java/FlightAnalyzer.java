@@ -1,5 +1,5 @@
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +29,8 @@ public class FlightAnalyzer {
     }
 
     private Duration getDuration(Ticket ticket) {
-        LocalDateTime departureTime = ticket.getDepartureDate().atTime(ticket.getDepartureTime());
-        LocalDateTime arrivalTime = ticket.getArrivalDate().atTime(ticket.getArrivalTime());
+        ZonedDateTime departureTime = ticket.getDepartureZonedTime();
+        ZonedDateTime arrivalTime = ticket.getArrivalZonedTime();
         return Duration.between(departureTime, arrivalTime);
     }
 
@@ -54,6 +54,7 @@ public class FlightAnalyzer {
 
     private double getMedianPrice() {
         List<Integer> prices = tickets.stream()
+                .filter(this::filterTicket)
                 .map(Ticket::getPrice)
                 .sorted()
                 .toList();
