@@ -60,7 +60,7 @@ public class FlightAnalyzer {
                 .toList();
 
         if (prices.size() % 2 == 0) {
-            return (prices.get(prices.size() / 2 - 1) + prices.get(prices.size() / 2 + 1)) / 2.0;
+            return (prices.get(prices.size() / 2 - 1) + prices.get(prices.size() / 2)) / 2.0;
         } else {
             return prices.get(prices.size() / 2);
         }
