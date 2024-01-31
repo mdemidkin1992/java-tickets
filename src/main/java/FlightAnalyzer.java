@@ -11,11 +11,11 @@ public class FlightAnalyzer {
         this.tickets = tickets;
     }
 
-    public Map<String, Duration> getMinimumFlightDurations() {
+    public Map<String, Duration> getMinimumFlightDurations(String destination, String origin) {
         Map<String, Duration> minDurations = new HashMap<>();
 
         for (Ticket t : tickets) {
-            if (filterTicket(t)) {
+            if (filterTicket(t, destination, origin)) {
                 String carrier = t.getCarrier();
                 Duration duration = getDuration(t);
 
@@ -25,36 +25,36 @@ public class FlightAnalyzer {
             }
         }
 
+        if (minDurations.isEmpty()) {
+            System.out.println("Для данных городов билеты не найдены");
+        }
+
         return minDurations;
     }
 
-    private Duration getDuration(Ticket ticket) {
-        ZonedDateTime departureTime = ticket.getDepartureZonedTime();
-        ZonedDateTime arrivalTime = ticket.getArrivalZonedTime();
-        return Duration.between(departureTime, arrivalTime);
+    private Duration getDuration(Ticket t) {
+        ZonedDateTime departure = DateTimeUtil.toZonedDateTime(t.getDepartureDate(), t.getDepartureTime(), t.getOrigin());
+        ZonedDateTime arrival = DateTimeUtil.toZonedDateTime(t.getArrivalDate(), t.getArrivalTime(), t.getDestination());
+        return Duration.between(departure, arrival);
     }
 
-    public double getPriceDifference() {
-        double avgPrice = getAveragePrice();
-        double medPrice = getMedianPrice();
+    public double getPriceDifference(String destination, String origin) {
+        double avgPrice = getAveragePrice(destination, origin);
+        double medPrice = getMedianPrice(destination, origin);
         return avgPrice - medPrice;
     }
 
-    private double getAveragePrice() {
+    private double getAveragePrice(String destination, String origin) {
         return tickets.stream()
-                .filter(this::filterTicket)
+                .filter(t -> filterTicket(t, destination, origin))
                 .mapToDouble(Ticket::getPrice)
                 .average()
                 .orElse(0.0);
     }
 
-    private boolean filterTicket(Ticket t) {
-        return t.getDestinationName().equals("Тель-Авив") && t.getOriginName().equals("Владивосток");
-    }
-
-    private double getMedianPrice() {
+    private double getMedianPrice(String destination, String origin) {
         List<Integer> prices = tickets.stream()
-                .filter(this::filterTicket)
+                .filter(t -> filterTicket(t, destination, origin))
                 .map(Ticket::getPrice)
                 .sorted()
                 .toList();
@@ -64,5 +64,9 @@ public class FlightAnalyzer {
         } else {
             return prices.get(prices.size() / 2);
         }
+    }
+
+    private boolean filterTicket(Ticket t, String destination, String origin) {
+        return t.getDestination().equals(destination) && t.getOrigin().equals(origin);
     }
 }

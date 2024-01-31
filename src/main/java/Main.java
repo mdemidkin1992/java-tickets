@@ -14,14 +14,14 @@ public class Main {
         System.out.println("Минимальное время полета между городами Владивосток и Тель-Авив " +
                 "для каждого авиаперевозчика:");
 
-        for (var entry : analyzer.getMinimumFlightDurations().entrySet()) {
+        for (var entry : analyzer.getMinimumFlightDurations("TLV", "VVO").entrySet()) {
             System.out.print(entry.getKey() + ": ");
             System.out.print(entry.getValue().toHoursPart() + " часов " + entry.getValue().toMinutesPart() + " минут\n");
         }
 
         System.out.println("Разница между средней ценой и медианой для " +
                 "полета между городами Владивосток и Тель-Авив:");
-        System.out.print(analyzer.getPriceDifference());
+        System.out.print(analyzer.getPriceDifference("TLV", "VVO"));
     }
 
     private static List<Ticket> deserializeTickets(String filename) {
